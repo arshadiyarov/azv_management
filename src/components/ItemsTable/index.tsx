@@ -184,6 +184,9 @@ const ItemsTable = () => {
 
   const handleChange = (value: string) => {
     setSearchProduct(value);
+    if (value.length === 0) {
+      return;
+    }
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
