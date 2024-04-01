@@ -70,7 +70,7 @@ export default function Main() {
 
     getSummary();
     getUser();
-  }, []);
+  }, [apiUrl, router]);
 
   return (
     <main className="w-screen lg:w-[1180px] pt-10 pb-4 mx-auto">

@@ -53,7 +53,7 @@ const Login = () => {
     if (checkAuthentication()) {
       router.push("/");
     }
-  }, []);
+  }, [router]);
 
   return (
     <div

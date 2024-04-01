@@ -101,7 +101,7 @@ const ItemsTable = () => {
 
     getSummary();
     getItems();
-  }, [itemsPerPage, searchProduct]);
+  }, [itemsPerPage, searchProduct, apiUrl, router]);
 
   const getHistoryItem = async (id: number) => {
     try {
@@ -152,7 +152,9 @@ const ItemsTable = () => {
       setIsLoading(true);
       const res = await axios.get(`${apiUrl}/items/`, {
         params: {
-          skip: (page - 1) * itemsPerPage.limit,
+          skip:
+            typeof itemsPerPage.limit !== "undefined" &&
+            (page - 1) * itemsPerPage.limit,
           limit: itemsPerPage.limit,
         },
       });
@@ -165,11 +167,13 @@ const ItemsTable = () => {
   };
 
   const handleLoadMore = () => {
-    const nextPage = Math.ceil(items.length / itemsPerPage.limit) + 1;
-    fetchItems(nextPage);
+    if (typeof itemsPerPage.limit !== "undefined") {
+      const nextPage = Math.ceil(items.length / itemsPerPage.limit) + 1;
+      fetchItems(nextPage);
+    }
   };
 
-  const fetchSuggestions = async (value) => {
+  const fetchSuggestions = async () => {
     try {
       const res = await axios.get(`${apiUrl}/items/`, {
         params: {
@@ -177,7 +181,7 @@ const ItemsTable = () => {
           limit: 100,
         },
       });
-      const filteredItems = res.data.filter((item) =>
+      const filteredItems = res.data.filter((item: Iitems) =>
         item.name.toLowerCase().includes(searchProduct.toLowerCase()),
       );
       setItems(filteredItems);
@@ -196,7 +200,7 @@ const ItemsTable = () => {
       clearTimeout(timeoutId);
     }
     const newTimeoutId = setTimeout(() => {
-      fetchSuggestions(value);
+      fetchSuggestions();
     }, 500);
     setTimeoutId(newTimeoutId);
   };

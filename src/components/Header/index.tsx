@@ -41,7 +41,7 @@ const Header = () => {
     };
 
     getUser();
-  }, []);
+  }, [apiUrl]);
 
   return (
     <header

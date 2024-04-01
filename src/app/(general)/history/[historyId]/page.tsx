@@ -61,7 +61,7 @@ const HistoryId = ({ params }: { params: { historyId: number } }) => {
     };
 
     getHistoryItem();
-  }, [params.historyId]);
+  }, [params.historyId, router, apiUrl]);
 
   return (
     <main className={`w-full`}>

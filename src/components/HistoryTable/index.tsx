@@ -89,7 +89,7 @@ const HistoryTable = () => {
 
     getSummary();
     getHistoryItems();
-  }, [itemsPerPage, selectedHistoryType]);
+  }, [itemsPerPage, selectedHistoryType, apiUrl, router]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -132,8 +132,10 @@ const HistoryTable = () => {
   };
 
   const handleLoadMore = () => {
-    const nextPage = Math.ceil(historyItems.length / itemsPerPage.limit) + 1; // Calculate next page number
-    fetchHistoryItems(nextPage); // Fetch items for the next page
+    if (typeof itemsPerPage.limit !== "undefined") {
+      const nextPage = Math.ceil(historyItems.length / itemsPerPage.limit) + 1; // Calculate next page number
+      fetchHistoryItems(nextPage); // Fetch items for the next page
+    }
   };
 
   const fetchHistoryItems = async (page: number) => {
@@ -141,7 +143,9 @@ const HistoryTable = () => {
     try {
       const res = await axios.get(`${apiUrl}/history/`, {
         params: {
-          skip: (page - 1) * itemsPerPage.limit, // Calculate the offset based on page number
+          skip:
+            typeof itemsPerPage.limit !== "undefined" &&
+            (page - 1) * itemsPerPage.limit, // Calculate the offset based on page number
           limit: itemsPerPage.limit,
           history_type: selectedHistoryType,
         },
