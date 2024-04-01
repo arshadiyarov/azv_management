@@ -144,25 +144,6 @@ const ItemsTable = () => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await axios.get(`${apiUrl}/items/`, {
-        params: {
-          skip: 0,
-          limit: 100,
-        },
-      });
-      const filteredItems = res.data.filter((item) =>
-        item.name.toLowerCase().includes(searchProduct.toLowerCase()),
-      );
-      setItems(filteredItems);
-    } catch (err) {
-      console.log("Error fetching items:", err);
-      throw err;
-    }
-  };
-
   const fetchItems = async (page: number) => {
     try {
       const res = await axios.get(`${apiUrl}/items/`, {
@@ -185,11 +166,19 @@ const ItemsTable = () => {
 
   const fetchSuggestions = async (value) => {
     try {
-      const res = await axios.get(`${apiUrl}/items/search/?name=${value}`);
-      setSuggestData(res.data);
-      console.log("Successful suggestion fetch", res.data);
+      const res = await axios.get(`${apiUrl}/items/`, {
+        params: {
+          skip: 0,
+          limit: 100,
+        },
+      });
+      const filteredItems = res.data.filter((item) =>
+        item.name.toLowerCase().includes(searchProduct.toLowerCase()),
+      );
+      setItems(filteredItems);
     } catch (err) {
-      console.log("Error suggestion fetch:", err);
+      console.log("Error fetching items:", err);
+      throw err;
     }
   };
 
@@ -213,7 +202,6 @@ const ItemsTable = () => {
       >
         <div className={"p-2 flex justify-center lg:justify-end"}>
           <form
-            onSubmit={(e) => handleSubmit(e)}
             className={
               "pl-1.5 border border-border flex items-center gap-2 rounded-md relative"
             }
@@ -233,30 +221,6 @@ const ItemsTable = () => {
                 onClick={() => clearClickHandle()}
                 className={"cursor-pointer"}
               />
-            )}
-            <button
-              className={
-                "px-3 py-1 text-white hover:bg-btnHover active:bg-btnActive bg-primary rounded-r-md"
-              }
-            >
-              Найти
-            </button>
-            {!!suggestData.length && searchProduct && (
-              <ul
-                className={
-                  "w-full max-h-[200px] lg:max-h-[350px] overflow-y-auto bg-white absolute top-6 lg:top-10 left-0 rounded-lg border border-border z-10"
-                }
-              >
-                {suggestData.map((item) => (
-                  <li
-                    key={item.id}
-                    onClick={() => handleChange(item.name)}
-                    className={"py-1 px-2 hover:bg-secondary cursor-pointer"}
-                  >
-                    {item.name}
-                  </li>
-                ))}
-              </ul>
             )}
           </form>
         </div>
