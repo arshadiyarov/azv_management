@@ -1,5 +1,5 @@
 export const checkAuthentication = (): boolean => {
-  if (typeof localStorage !== undefined) {
+  if (typeof window.localStorage !== undefined) {
     const accessToken = localStorage.accessToken;
     return !!accessToken;
   } else {
@@ -8,7 +8,7 @@ export const checkAuthentication = (): boolean => {
 };
 
 export const exitAuthentication = () => {
-  if (typeof localStorage !== undefined) {
+  if (typeof window.localStorage !== undefined) {
     localStorage.clear();
   } else {
     console.log("localStorage is not available");
