@@ -1,33 +1,32 @@
 "use client";
 
-import React, { FormEvent, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import { IoIosSearch } from "react-icons/io";
-import { MdEdit } from "react-icons/md";
 import { useButtonContext } from "@/ButtonContext";
 import { RxCross2 } from "react-icons/rx";
 import { checkAuthentication } from "@/AuthUtil";
 import { useRouter } from "next/navigation";
 
-interface Iitems {
+interface IItems {
   name: string;
   quantity: number | "";
   price: number | "";
   id: number;
 }
 
-interface IitemsPerPage {
+interface IItemsPerPage {
   limit?: number;
 }
 
-interface IitemsSummary {
+interface IItemsSummary {
   unique_items_count: number;
   total_items_count: number;
   total_price: number;
 }
 
-interface IhistoryItem {
+interface IHistoryItem {
   username: string;
   buyer: string | null;
   extra_info: string | null;
@@ -42,22 +41,15 @@ interface IhistoryItem {
   timestamp: string;
 }
 
-interface ISuggestData {
-  name: string;
-  quantity: number;
-  price: number;
-  id: number;
-}
-
 const ItemsTable = () => {
-  const [items, setItems] = useState<Iitems[]>([]);
-  const [itemsPerPage, setItemsPerPage] = useState<IitemsPerPage>({
+  const [items, setItems] = useState<IItems[]>([]);
+  const [itemsPerPage, setItemsPerPage] = useState<IItemsPerPage>({
     limit: 10,
   });
   const [searchProduct, setSearchProduct] = useState("");
   const { itemUpdatingData, setItemUpdatingData, setHistoryItem } =
     useButtonContext();
-  const [itemsSummary, setItemsSummary] = useState<IitemsSummary>({
+  const [itemsSummary, setItemsSummary] = useState<IItemsSummary>({
     unique_items_count: 0,
     total_price: 0,
     total_items_count: 0,
@@ -76,6 +68,9 @@ const ItemsTable = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(`${apiUrl}/items/`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+          },
           params: {
             skip: 0,
             limit: itemsPerPage?.limit || 10,
@@ -90,7 +85,11 @@ const ItemsTable = () => {
     };
     const getSummary = async () => {
       try {
-        const res = await axios(`${apiUrl}/items/summary/`);
+        const res = await axios.get(`${apiUrl}/items/summary/`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+          },
+        });
         setItemsSummary(res.data);
       } catch (err) {
         console.log("Error fetching items summary:", err);
@@ -104,8 +103,12 @@ const ItemsTable = () => {
 
   const getHistoryItem = async (id: number) => {
     try {
-      const res = await axios.get(`${apiUrl}/history/`);
-      const foundItem = res.data.find((item: IhistoryItem) => item.id == id);
+      const res = await axios.get(`${apiUrl}/history/`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
+      });
+      const foundItem = res.data.find((item: IHistoryItem) => item.id == id);
       setHistoryItem(foundItem || null);
     } catch (err) {
       console.log("Error fetching item:", err);
@@ -134,6 +137,9 @@ const ItemsTable = () => {
     setSearchProduct("");
     try {
       const res = await axios.get(`${apiUrl}/items/`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
         params: {
           skip: 0,
           limit: itemsPerPage?.limit || 10,
@@ -150,6 +156,9 @@ const ItemsTable = () => {
     try {
       setIsLoading(true);
       const res = await axios.get(`${apiUrl}/items/`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
         params: {
           skip:
             typeof itemsPerPage.limit !== "undefined" &&
@@ -175,12 +184,15 @@ const ItemsTable = () => {
   const fetchSuggestions = async () => {
     try {
       const res = await axios.get(`${apiUrl}/items/`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
         params: {
           skip: 0,
           limit: 99999999,
         },
       });
-      const filteredItems = res.data.filter((item: Iitems) =>
+      const filteredItems = res.data.filter((item: IItems) =>
         item.name.toLowerCase().includes(searchProduct.toLowerCase()),
       );
       setItems(filteredItems);
@@ -251,28 +263,21 @@ const ItemsTable = () => {
             {items.map((item) => (
               <tr
                 key={item.id}
-                className={`text-center border-border relative border-y hover:bg-secondary`}
+                className={`text-center border-border relative border-y hover:bg-secondary cursor-pointer`}
+                onClick={() =>
+                  updateClickHandle(
+                    item.id,
+                    item.name,
+                    item.quantity,
+                    item.price,
+                  )
+                }
               >
                 <td className={"py-4"}>{item.name}</td>
                 <td>{item.quantity.toLocaleString()} шт</td>
                 <td className={"w-fit pr-2"}>
                   {item.price.toLocaleString()} тг
                 </td>
-                <button
-                  className={
-                    "absolute right-0 top-[5px] lg:right-[11px] lg:top-[11px] text-lg lg:text-xl hover:bg-black hover:bg-opacity-10 rounded-full p-2"
-                  }
-                  onClick={() =>
-                    updateClickHandle(
-                      item.id,
-                      item.name,
-                      item.quantity,
-                      item.price,
-                    )
-                  }
-                >
-                  <MdEdit />
-                </button>
               </tr>
             ))}
           </tbody>

@@ -62,6 +62,9 @@ const HistoryTable = () => {
       setIsLoading(true);
       try {
         const res = await axios.get(`${apiUrl}/history/`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+          },
           params: {
             skip: 0,
             limit: itemsPerPage?.limit || 10,
@@ -79,7 +82,11 @@ const HistoryTable = () => {
 
     const getSummary = async () => {
       try {
-        const res = await axios(`${apiUrl}/items/summary/`);
+        const res = await axios(`${apiUrl}/items/summary/`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+          },
+        });
         setItemsSummary(res.data);
       } catch (err) {
         console.log("Error fetching items summary:", err);
@@ -142,6 +149,9 @@ const HistoryTable = () => {
     setIsLoading(true);
     try {
       const res = await axios.get(`${apiUrl}/history/`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
         params: {
           skip:
             typeof itemsPerPage.limit !== "undefined" &&

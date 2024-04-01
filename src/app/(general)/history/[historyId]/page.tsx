@@ -46,7 +46,11 @@ const HistoryId = ({ params }: { params: { historyId: number } }) => {
 
     const getHistoryItem = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/history/`);
+        const res = await axios.get(`${apiUrl}/history/`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+          },
+        });
         const foundItem = res.data.find(
           (item: IhistoryItem) => item.id == params.historyId,
         );

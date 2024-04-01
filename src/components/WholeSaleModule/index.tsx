@@ -114,7 +114,11 @@ const WholeSaleModule = () => {
 
   const fetchSuggestions = async (value: string) => {
     try {
-      const res = await axios.get(`${apiUrl}/items/search/?name=${value}`);
+      const res = await axios.get(`${apiUrl}/items/search/?name=${value}`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
+      });
       setSuggestData(res.data);
       console.log("Successful suggestion fetch", res.data);
     } catch (err) {
