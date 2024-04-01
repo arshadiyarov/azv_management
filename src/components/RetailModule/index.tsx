@@ -317,7 +317,7 @@ const RetailModule = () => {
               Отправить
             </button>
             {isReqError && (
-              <p className={"text-red-600"}>Не верное имя или количество</p>
+              <p className={"text-red-600"}>Неверное имя или количество</p>
             )}
             {isSuccess && <p className={"text-green-500"}>Успешно!</p>}
           </div>
