@@ -1,9 +1,16 @@
 export const checkAuthentication = (): boolean => {
-  const accessToken = localStorage.accessToken;
-  return !!accessToken;
+  if (typeof localStorage !== undefined) {
+    const accessToken = localStorage.accessToken;
+    return !!accessToken;
+  } else {
+    return false;
+  }
 };
 
 export const exitAuthentication = () => {
-  const accessToken = localStorage.accessToken;
-  localStorage.clear();
+  if (typeof localStorage !== undefined) {
+    localStorage.clear();
+  } else {
+    console.log("localStorage is not available");
+  }
 };

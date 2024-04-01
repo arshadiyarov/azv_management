@@ -21,12 +21,17 @@ const Header = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/me/`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.accessToken}`,
-          },
-        });
-        localStorage.setItem("username", res.data.username);
+        if (typeof localStorage !== "undefined" && localStorage.accessToken) {
+          const res = await axios.get(`${apiUrl}/me/`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.accessToken}`,
+            },
+          });
+          localStorage.setItem("username", res.data.username);
+        } else {
+          // Handle the case when localStorage or accessToken is not available
+          console.log("localStorage or accessToken is not available");
+        }
       } catch (err) {
         console.log("Error fetching user/me:", err);
         throw err;

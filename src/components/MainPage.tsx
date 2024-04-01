@@ -36,7 +36,7 @@ export default function Main() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
-    if (!checkAuthentication()) {
+    if (typeof localStorage !== "undefined" && !checkAuthentication()) {
       router.push("/login");
     }
     const getSummary = async () => {

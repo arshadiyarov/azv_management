@@ -54,7 +54,7 @@ const HistoryTable = () => {
   const modalRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (!checkAuthentication()) {
+    if (typeof localStorage !== undefined && !checkAuthentication()) {
       router.push("/login");
     }
 

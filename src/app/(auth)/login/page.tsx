@@ -32,12 +32,15 @@ const Login = () => {
   });
 
   const submitHandle = async (e: FormEvent) => {
+    ы;
     e.preventDefault();
 
     try {
       const res: Ires = await axios.post(`${apiUrl}/login`, authData);
       const accessToken = res.data?.access_token;
-      localStorage.setItem("accessToken", accessToken);
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("accessToken", accessToken);
+      }
       router.push("/");
       setIsError(false);
     } catch (err) {
