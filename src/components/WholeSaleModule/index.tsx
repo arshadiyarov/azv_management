@@ -51,7 +51,7 @@ const WholeSaleModule = () => {
     try {
       const res = await axios.post(`${apiUrl}/sell/wholesale`, formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.accessToken}`,
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
         },
       });
       setIsReqError(false);

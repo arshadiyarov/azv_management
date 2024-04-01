@@ -43,7 +43,7 @@ const UpdateModule = () => {
         payload,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.accessToken}`,
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
           },
         },
       );

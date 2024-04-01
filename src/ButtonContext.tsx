@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface Iitems {
   name: string;
@@ -107,6 +113,13 @@ export const ButtonProvider: React.FC<{ children: ReactNode }> = ({
     id: 0,
     timestamp: "",
   });
+
+  useEffect(() => {
+    console.log("effect");
+    if (typeof window !== "undefined") {
+      return;
+    }
+  }, []);
 
   return (
     <ButtonContext.Provider

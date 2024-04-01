@@ -17,17 +17,19 @@ const Header = () => {
   } = useButtonContext();
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        if (typeof localStorage !== "undefined" && localStorage.accessToken) {
+        if (typeof window !== "undefined" && window.localStorage.accessToken) {
           const res = await axios.get(`${apiUrl}/me/`, {
             headers: {
-              Authorization: `Bearer ${localStorage.accessToken}`,
+              Authorization: `Bearer ${window.localStorage.accessToken}`,
             },
           });
-          localStorage.setItem("username", res.data.username);
+          window.localStorage.setItem("username", res.data.username);
+          setUsername(res.data.username);
         } else {
           // Handle the case when localStorage or accessToken is not available
           console.log("localStorage or accessToken is not available");
@@ -54,7 +56,7 @@ const Header = () => {
         >
           <GiHamburgerMenu />
         </button>
-        Здравствуйте, {localStorage.username}
+        Здравствуйте, {username || "Гость"}
       </div>
       <div className={"flex lg:flex-row items-center gap-4"}>
         <button

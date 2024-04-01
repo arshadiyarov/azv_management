@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import NavBar from "@/components/NavBar";
-import Header from "@/components/Header";
 import { ButtonProvider, useButtonContext } from "@/ButtonContext";
 
 export const metadata: Metadata = {

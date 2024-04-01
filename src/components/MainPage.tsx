@@ -36,14 +36,14 @@ export default function Main() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
-    if (typeof localStorage !== "undefined" && !checkAuthentication()) {
+    if (typeof window.localStorage !== "undefined" && !checkAuthentication()) {
       router.push("/login");
     }
     const getSummary = async () => {
       try {
         const res = await axios.get(`${apiUrl}/items/summary/`, {
           headers: {
-            Authorization: `Bearer ${localStorage.accessToken}`,
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
           },
         });
         setItemsSummary(res.data);
@@ -57,11 +57,11 @@ export default function Main() {
       try {
         const res = await axios.get(`${apiUrl}/me/`, {
           headers: {
-            Authorization: `Bearer ${localStorage.accessToken}`,
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
           },
         });
         setUser(res.data);
-        localStorage.setItem("username", res.data.username);
+        window.localStorage.setItem("username", res.data.username);
       } catch (err) {
         console.log("Error fetching user/me:", err);
         throw err;
