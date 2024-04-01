@@ -23,12 +23,12 @@ const MainPage = () => {
       <NavBar styles={`${isNavActive ? "absolute" : "hidden"}`} />
 
       <div
-        className={`w-full relative ${isRetailActive || isWholesaleActive || isUpdateActive || isAddItemActive ? "h-screen overflow-hidden" : ""}`}
+        className={`w-full relative ${isRetailActive || isWholesaleActive || isAddItemActive ? "h-screen overflow-hidden" : ""} ${isUpdateActive ? "overflow-x-hidden" : ""}`}
       >
         <Header />
         <Main />
         {isUpdateActive && (
-          <div className={"absolute top-0 left-0 lg:top-0 lg:-left-[130px]"}>
+          <div className={"fixed top-0 left-0 lg:top-0 lg:left-[130px]"}>
             <UpdateModule />
           </div>
         )}
