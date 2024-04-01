@@ -20,16 +20,19 @@ const AddItemModule = () => {
     },
   ]);
   const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { setIsAddItemActive } = useButtonContext();
   const modalRef = useRef<HTMLDivElement>(null);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const submitHandle = async (e: FormEvent) => {
+    e.preventDefault();
     if (
       items.some(
         (item) => item.price === 0 || item.name === "" || item.quantity === 0,
       )
     ) {
+      setIsError(true);
       return;
     }
     try {
@@ -38,8 +41,11 @@ const AddItemModule = () => {
           Authorization: `Bearer ${window.localStorage.accessToken}`,
         },
       });
+      setIsSuccess(true);
       setIsError(false);
+      location.reload();
     } catch (err) {
+      setIsSuccess(false);
       console.log("Post request error:", err);
       setIsError(true);
     }
@@ -186,12 +192,18 @@ const AddItemModule = () => {
             <HiPlus className="-ml-4 mr-2 text-xl" />
             Еще
           </button>
+
           <button
             type="submit"
             className="mt-10 self-center bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
           >
             Подтвердить
           </button>
+          {isSuccess && (
+            <p className="absolute text-green-500 bottom-[45px] left-[188px]">
+              Успешно!
+            </p>
+          )}
           {isError && (
             <p className="absolute text-red-600 bottom-[45px] left-[79px] text-sm">
               Количество и цена не может быть нулевым

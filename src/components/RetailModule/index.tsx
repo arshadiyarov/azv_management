@@ -41,7 +41,7 @@ const RetailModule = () => {
   const [activeInputId, setActiveInputId] = useState<string>("");
   const [suggestData, setSuggestData] = useState<ISuggestData[]>([]); // New state for suggestion data
   const [activeInputIndex, setActiveInputIndex] = useState<number>(0); // New state for active input index
-
+  const [isQuantityInput, setIsQuantityInput] = useState(false);
   function generateId() {
     return `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
   }
@@ -103,15 +103,18 @@ const RetailModule = () => {
       product.id === id ? { ...product, [key]: value } : product,
     );
     setProducts(updatedProducts);
-
     setActiveProductId(id);
 
-    // Clear previous timeout if exists
+    if (key === "quantity") {
+      setIsQuantityInput(true);
+    } else {
+      setIsQuantityInput(false);
+    }
+
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
-    // Set new timeout to fetch suggestions after 500 milliseconds
     const newTimeoutId = setTimeout(() => {
       fetchSuggestions(value);
     }, 500);
@@ -124,7 +127,7 @@ const RetailModule = () => {
       ...products,
       { id: newProductId, buyer: "", name: "", quantity: "" },
     ]);
-    setActiveInputId(newProductId); // Set the active input field to the newly added product
+    setActiveInputId(newProductId);
   };
 
   useEffect(() => {
@@ -154,18 +157,16 @@ const RetailModule = () => {
   };
 
   const handleSuggestionClick = (value: string) => {
-    // Find the index of the current product being edited
     const currentIndex = products.findIndex(
       (product) => product.id === activeProductId,
     );
 
-    // Update the product's name with the selected suggestion
     if (currentIndex !== -1) {
       const updatedProducts = products.map((product) =>
         product.id === activeProductId ? { ...product, name: value } : product,
       );
       setProducts(updatedProducts);
-      setSuggestData([]); // Clear suggestions
+      setSuggestData([]);
     }
   };
 
@@ -234,9 +235,9 @@ const RetailModule = () => {
                     </div>
                     {product.name &&
                       activeInputId === product.id &&
-                      !!suggestData.length && (
+                      !!suggestData.length &&
+                      !isQuantityInput && (
                         <ul className="w-full max-h-[200px] overflow-y-auto bg-white absolute top-10 left-0 rounded-lg border border-border z-10">
-                          {/* Suggestions for the active input field */}
                           {suggestData.map((item) => (
                             <li
                               key={item.id}

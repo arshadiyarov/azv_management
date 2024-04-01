@@ -32,6 +32,7 @@ const WholeSaleModule = () => {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [activeProductId, setActiveProductId] = useState<string>("");
   const [activeInputId, setActiveInputId] = useState<string>("");
+  const [isQuantityInput, setIsQuantityInput] = useState(false);
 
   const handleFocus = (id: string) => {
     setActiveInputId(id);
@@ -91,8 +92,13 @@ const WholeSaleModule = () => {
       product.id === id ? { ...product, [key]: value } : product,
     );
     setProducts(updatedProducts);
-
     setActiveProductId(id);
+
+    if (key === "quantity") {
+      setIsQuantityInput(true);
+    } else {
+      setIsQuantityInput(false);
+    }
 
     // Clear previous timeout if exists
     if (timeoutId) {
@@ -145,18 +151,16 @@ const WholeSaleModule = () => {
   }, [setIsWholesaleActive]);
 
   const handleSuggestionClick = (value: string) => {
-    // Find the index of the current product being edited
     const currentIndex = products.findIndex(
       (product) => product.id === activeProductId,
     );
 
-    // Update the product's name with the selected suggestion
     if (currentIndex !== -1) {
       const updatedProducts = products.map((product) =>
         product.id === activeProductId ? { ...product, name: value } : product,
       );
       setProducts(updatedProducts);
-      setSuggestData([]); // Clear suggestions
+      setSuggestData([]);
     }
   };
 
@@ -226,7 +230,8 @@ const WholeSaleModule = () => {
                     </div>
                     {product.name &&
                       activeInputId === product.id &&
-                      !!suggestData.length && (
+                      !!suggestData.length &&
+                      !isQuantityInput && (
                         <ul className="w-full max-h-[200px] overflow-y-auto bg-white absolute top-10 left-0 rounded-lg border border-border z-10">
                           {/* Suggestions for the active input field */}
                           {suggestData.map((item) => (

@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 
 import { useButtonContext } from "@/ButtonContext";
 import { RxCross2 } from "react-icons/rx";
@@ -9,6 +9,7 @@ const UpdateModule = () => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { itemUpdatingData, setItemUpdatingData, historyItem, setHistoryItem } =
     useButtonContext();
+  const [isSuccess, setIsSuccess] = useState(false);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -47,9 +48,10 @@ const UpdateModule = () => {
           },
         },
       );
-
+      setIsSuccess(true);
       console.log("Update successful:", res.data);
     } catch (err) {
+      setIsSuccess(true);
       console.error("Error updating item:", err);
     }
   };
@@ -153,6 +155,11 @@ const UpdateModule = () => {
               </div>
             )}
           </div>
+          {isSuccess && (
+            <p className="absolute text-green-500 bottom-[58px] left-[208px]">
+              Успешно!
+            </p>
+          )}
           <button
             className={
               "bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center h-fit hover:bg-btnHover active:bg-btnActive w-full"

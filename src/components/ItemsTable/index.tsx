@@ -62,7 +62,6 @@ const ItemsTable = () => {
     total_price: 0,
     total_items_count: 0,
   });
-  const [suggestData, setSuggestData] = useState<ISuggestData[]>([]);
   const { isUpdateActive, setIsUpdateActive } = useButtonContext();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
@@ -178,7 +177,7 @@ const ItemsTable = () => {
       const res = await axios.get(`${apiUrl}/items/`, {
         params: {
           skip: 0,
-          limit: 100,
+          limit: 99999999,
         },
       });
       const filteredItems = res.data.filter((item: Iitems) =>
@@ -280,18 +279,18 @@ const ItemsTable = () => {
         </table>
       </div>
       <div
-        className={
-          "w-screen lg:w-full flex justify-between items-center px-4 py-3"
-        }
+        className={`w-screen lg:w-full flex ${searchProduct ? "justify-end" : "justify-between"} items-center px-4 py-3`}
       >
-        <button
-          className={
-            "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
-          }
-          onClick={handleLoadMore}
-        >
-          Загрузить еще
-        </button>
+        {!searchProduct && (
+          <button
+            className={
+              "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
+            }
+            onClick={handleLoadMore}
+          >
+            Загрузить еще
+          </button>
+        )}
         {isLoading && <p>Загрузка...</p>}
         <select
           name="itemsPerPage"
