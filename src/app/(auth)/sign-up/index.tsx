@@ -53,7 +53,7 @@ const SignUp = () => {
     }
 
     try {
-      const res = await axios.post(`${apiUrl}/users/`, regData);
+      await axios.post(`${apiUrl}/users/`, regData);
       setRegData({ username: "", role: "", password: "" });
       setConfPassword("");
       setIsError(false);

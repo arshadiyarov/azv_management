@@ -10,7 +10,7 @@ import { checkAuthentication } from "@/AuthUtil";
 import { useRouter } from "next/navigation";
 import { useButtonContext } from "@/ButtonContext";
 
-interface IitemsSummary {
+interface IItemsSummary {
   unique_items_count: number;
   total_items_count: number;
   total_price: number;
@@ -24,7 +24,7 @@ interface IUser {
 }
 
 export default function Main() {
-  const [itemsSummary, setItemsSummary] = useState<IitemsSummary>();
+  const [itemsSummary, setItemsSummary] = useState<IItemsSummary>();
   const { setIsAddItemActive, isAddItemActive } = useButtonContext();
   const [user, setUser] = useState({
     id: 0,

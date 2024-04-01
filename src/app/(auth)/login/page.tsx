@@ -1,14 +1,13 @@
 "use client";
 
 import React, { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import { checkAuthentication } from "@/AuthUtil";
 
-interface IauthData {
+interface IAuthData {
   username: string;
   password: string;
 }
@@ -26,7 +25,7 @@ const Login = () => {
 
   const router = useRouter();
 
-  const [authData, setAuthData] = useState<IauthData>({
+  const [authData, setAuthData] = useState<IAuthData>({
     username: "",
     password: "",
   });
