@@ -62,7 +62,7 @@ const RetailModule = () => {
     };
 
     try {
-      const res = await axios.post(`${apiUrl}/sell/wholesale`, formData, {
+      await axios.post(`${apiUrl}/sell/wholesale`, formData, {
         headers: {
           Authorization: `Bearer ${window.localStorage.accessToken}`,
         },

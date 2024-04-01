@@ -36,7 +36,7 @@ const AddItemModule = () => {
       return;
     }
     try {
-      const res = await axios.post(`${apiUrl}/items/`, items, {
+      await axios.post(`${apiUrl}/items/`, items, {
         headers: {
           Authorization: `Bearer ${window.localStorage.accessToken}`,
         },

@@ -8,14 +8,14 @@ import React, {
   useState,
 } from "react";
 
-interface Iitems {
+interface IItems {
   name: string;
   quantity: number | "";
   price: number | "";
   id: number;
 }
 
-interface IhistoryItem {
+interface IHistoryItem {
   username: string;
   buyer: string | null;
   extra_info: string;
@@ -36,8 +36,8 @@ interface ButtonState {
   isUpdateActive: boolean;
   isAddItemActive: boolean;
   isNavActive: boolean;
-  itemUpdatingData: Iitems;
-  historyItem: IhistoryItem;
+  itemUpdatingData: IItems;
+  historyItem: IHistoryItem;
 }
 
 interface ButtonContextType extends ButtonState {
@@ -46,8 +46,8 @@ interface ButtonContextType extends ButtonState {
   setIsUpdateActive: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAddItemActive: React.Dispatch<React.SetStateAction<boolean>>;
   setIsNavActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setItemUpdatingData: React.Dispatch<React.SetStateAction<Iitems>>;
-  setHistoryItem: React.Dispatch<React.SetStateAction<IhistoryItem>>;
+  setItemUpdatingData: React.Dispatch<React.SetStateAction<IItems>>;
+  setHistoryItem: React.Dispatch<React.SetStateAction<IHistoryItem>>;
 }
 
 const initialButtonState: ButtonContextType = {
@@ -93,13 +93,13 @@ export const ButtonProvider: React.FC<{ children: ReactNode }> = ({
   const [isUpdateActive, setIsUpdateActive] = useState(false);
   const [isAddItemActive, setIsAddItemActive] = useState(false);
   const [isNavActive, setIsNavActive] = useState(false);
-  const [itemUpdatingData, setItemUpdatingData] = useState<Iitems>({
+  const [itemUpdatingData, setItemUpdatingData] = useState<IItems>({
     id: 0,
     name: "",
     quantity: 0,
     price: 0,
   });
-  const [historyItem, setHistoryItem] = useState<IhistoryItem>({
+  const [historyItem, setHistoryItem] = useState<IHistoryItem>({
     username: "",
     buyer: "",
     extra_info: "",

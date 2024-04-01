@@ -6,7 +6,7 @@ import { checkAuthentication } from "@/AuthUtil";
 
 import { HiOutlineFilter } from "react-icons/hi";
 
-interface IhistoryItems {
+interface IHistoryItems {
   username: string;
   buyer: string;
   extra_info: string;
@@ -18,32 +18,32 @@ interface IhistoryItems {
   timestamp: string;
 }
 
-interface IitemsPerPage {
+interface IItemsPerPage {
   limit?: number;
 }
 
-interface IitemsSummary {
+interface IItemsSummary {
   unique_items_count: number;
   total_items_count: number;
   total_price: number;
 }
 
-interface ItimeZone {
+interface ITimeZone {
   timeZone: number;
 }
 
 const HistoryTable = () => {
-  const [historyItems, setHistoryItems] = useState<IhistoryItems[]>([]);
-  const [itemsPerPage, setItemsPerPage] = useState<IitemsPerPage>({
+  const [historyItems, setHistoryItems] = useState<IHistoryItems[]>([]);
+  const [itemsPerPage, setItemsPerPage] = useState<IItemsPerPage>({
     limit: 10,
   });
-  const [itemsSummary, setItemsSummary] = useState<IitemsSummary>({
+  const [itemsSummary, setItemsSummary] = useState<IItemsSummary>({
     unique_items_count: 0,
     total_price: 0,
     total_items_count: 0,
   });
 
-  const [timeZone, setTimeZone] = useState<ItimeZone>({
+  const [timeZone, setTimeZone] = useState<ITimeZone>({
     timeZone: 0,
   });
   const [isFilterActive, setIsFilterActive] = useState(false);
@@ -168,7 +168,7 @@ const HistoryTable = () => {
     }
   };
 
-  const checkHistoryType = (historyItem: IhistoryItems) => {
+  const checkHistoryType = (historyItem: IHistoryItems) => {
     switch (historyItem.history_type) {
       case "sale":
         return "Розничная продажа";

@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useButtonContext } from "@/ButtonContext";
 import { RxCross2 } from "react-icons/rx";
@@ -28,7 +28,7 @@ const UpdateModule = () => {
     };
   }, [setIsUpdateActive]);
 
-  const submitHandle = async (e: FormEvent) => {
+  const submitHandle = async () => {
     const payload = {
       item_update: {
         name: itemUpdatingData.name,
@@ -71,7 +71,7 @@ const UpdateModule = () => {
         <h3 className={"text-xl text-center font-semibold"}>
           Изменить продукт
         </h3>
-        <form onSubmit={(e) => submitHandle(e)}>
+        <form onSubmit={() => submitHandle()}>
           <div className={"flex flex-col mb-10 gap-2"}>
             <div className={"flex flex-col"}>
               <label htmlFor="">

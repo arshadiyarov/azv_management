@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { ButtonProvider, useButtonContext } from "@/ButtonContext";
+import { ButtonProvider } from "@/ButtonContext";
 
 export const metadata: Metadata = {
   title: "Azv Management",

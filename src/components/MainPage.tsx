@@ -16,13 +16,6 @@ interface IItemsSummary {
   total_price: number;
 }
 
-interface IUser {
-  id: number;
-  username: string;
-  password: string;
-  role: string;
-}
-
 export default function Main() {
   const [itemsSummary, setItemsSummary] = useState<IItemsSummary>();
   const { setIsAddItemActive, isAddItemActive } = useButtonContext();

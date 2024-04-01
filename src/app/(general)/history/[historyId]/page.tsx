@@ -9,7 +9,7 @@ import { checkAuthentication } from "@/AuthUtil";
 import { useRouter } from "next/navigation";
 import InfoBox from "@/components/ui/InfoBox";
 
-interface IhistoryItem {
+interface IHistoryItem {
   username: string;
   buyer: string | null;
   extra_info: string | null;
@@ -24,17 +24,17 @@ interface IhistoryItem {
   timestamp: string;
 }
 
-interface IitemChange {
+interface IItemChange {
   name: string;
   quantity: number;
   price: number;
 }
 
 const HistoryId = ({ params }: { params: { historyId: number } }) => {
-  const [historyItem, setHistoryItem] = useState<IhistoryItem | null>(null);
-  const [itemAfterChange, setItemAfterChange] = useState<IitemChange[]>([]);
+  const [historyItem, setHistoryItem] = useState<IHistoryItem | null>(null);
+  const [itemAfterChange, setItemAfterChange] = useState<IItemChange[]>([]);
   const [itemBeforeChange, setItemBeforeChange] = useState<
-    IitemChange[] | null
+    IItemChange[] | null
   >([]);
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -52,7 +52,7 @@ const HistoryId = ({ params }: { params: { historyId: number } }) => {
           },
         });
         const foundItem = res.data.find(
-          (item: IhistoryItem) => item.id == params.historyId,
+          (item: IHistoryItem) => item.id == params.historyId,
         );
         setItemAfterChange(foundItem.after_change);
         setItemBeforeChange(foundItem.before_change);
