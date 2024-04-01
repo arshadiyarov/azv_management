@@ -32,7 +32,6 @@ const Login = () => {
   });
 
   const submitHandle = async (e: FormEvent) => {
-    ы;
     e.preventDefault();
 
     try {
