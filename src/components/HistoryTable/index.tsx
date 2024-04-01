@@ -46,7 +46,7 @@ const HistoryTable = () => {
   const [timeZone, setTimeZone] = useState<ItimeZone>({
     timeZone: 0,
   });
-  const [isFilterActive, setIsFilterActive] = useState(true);
+  const [isFilterActive, setIsFilterActive] = useState(false);
   const [selectedHistoryType, setSelectedHistoryType] = useState("");
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -59,6 +59,7 @@ const HistoryTable = () => {
     }
 
     const getHistoryItems = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get(`${apiUrl}/history/`, {
           params: {
@@ -68,6 +69,7 @@ const HistoryTable = () => {
           },
         });
         setHistoryItems(res.data);
+        setIsLoading(false);
         setTimeZone({ timeZone: new Date().getTimezoneOffset() / 60 });
       } catch (err) {
         console.log("Error fetching items:", err);

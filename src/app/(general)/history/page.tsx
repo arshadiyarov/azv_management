@@ -6,7 +6,6 @@ import { useButtonContext } from "@/ButtonContext";
 import RetailModule from "@/components/RetailModule";
 import React from "react";
 import WholeSaleModule from "@/components/WholeSaleModule";
-import UpdateModule from "@/components/UpdateModule";
 import AddItemModule from "@/components/AddItemModule";
 import NavBar from "@/components/NavBar";
 
