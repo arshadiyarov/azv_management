@@ -66,6 +66,7 @@ const ItemsTable = () => {
   const { isUpdateActive, setIsUpdateActive } = useButtonContext();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -74,6 +75,7 @@ const ItemsTable = () => {
     }
     const getItems = async () => {
       try {
+        setIsLoading(true);
         const res = await axios.get(`${apiUrl}/items/`, {
           params: {
             skip: 0,
@@ -81,6 +83,7 @@ const ItemsTable = () => {
           },
         });
         setItems(res.data);
+        setIsLoading(false);
       } catch (err) {
         console.log("Error fetching items:", err);
         throw err;
@@ -146,6 +149,7 @@ const ItemsTable = () => {
 
   const fetchItems = async (page: number) => {
     try {
+      setIsLoading(true);
       const res = await axios.get(`${apiUrl}/items/`, {
         params: {
           skip: (page - 1) * itemsPerPage.limit,
@@ -153,6 +157,7 @@ const ItemsTable = () => {
         },
       });
       setItems((prevItems) => [...prevItems, ...res.data]);
+      setIsLoading(false);
     } catch (err) {
       console.log("Error fetching items:", err);
       throw err;
@@ -283,6 +288,7 @@ const ItemsTable = () => {
         >
           Загрузить еще
         </button>
+        {isLoading && <p>Загрузка...</p>}
         <select
           name="itemsPerPage"
           id="itemsPerPage"

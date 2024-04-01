@@ -50,6 +50,7 @@ const HistoryTable = () => {
   const [selectedHistoryType, setSelectedHistoryType] = useState("");
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const [isLoading, setIsLoading] = useState(false);
   const modalRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -134,6 +135,7 @@ const HistoryTable = () => {
   };
 
   const fetchHistoryItems = async (page: number) => {
+    setIsLoading(true);
     try {
       const res = await axios.get(`${apiUrl}/history/`, {
         params: {
@@ -142,6 +144,7 @@ const HistoryTable = () => {
           history_type: selectedHistoryType,
         },
       });
+      setIsLoading(false);
       setHistoryItems((prevItems) => [...prevItems, ...res.data]); // Append newly fetched items to existing items
     } catch (err) {
       console.log("Error fetching history items:", err);
@@ -269,6 +272,7 @@ const HistoryTable = () => {
         >
           Загрузить еще
         </button>
+        {isLoading && <p>Загрузка...</p>}
         <select
           name="itemsPerPage"
           id="itemsPerPage"
