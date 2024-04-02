@@ -54,6 +54,12 @@ const ItemsTable = () => {
     total_price: 0,
     total_items_count: 0,
   });
+  const [user, setUser] = useState({
+    id: 0,
+    username: "",
+    password: "",
+    role: "",
+  });
   const { isUpdateActive, setIsUpdateActive } = useButtonContext();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
@@ -97,6 +103,22 @@ const ItemsTable = () => {
       }
     };
 
+    const getUser = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/me/`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+          },
+        });
+        setUser(res.data);
+        window.localStorage.setItem("username", res.data.username);
+      } catch (err) {
+        console.log("Error fetching user/me:", err);
+        throw err;
+      }
+    };
+
+    getUser();
     getSummary();
     getItems();
   }, [itemsPerPage, searchProduct, apiUrl, router]);
@@ -264,14 +286,16 @@ const ItemsTable = () => {
               <tr
                 key={item.id}
                 className={`text-center border-border relative border-y hover:bg-secondary cursor-pointer`}
-                onClick={() =>
-                  updateClickHandle(
-                    item.id,
-                    item.name,
-                    item.quantity,
-                    item.price,
-                  )
-                }
+                onClick={() => {
+                  if (user.role === "admin") {
+                    updateClickHandle(
+                      item.id,
+                      item.name,
+                      item.quantity,
+                      item.price,
+                    );
+                  }
+                }}
               >
                 <td className={"py-4"}>{item.name}</td>
                 <td>{item.quantity.toLocaleString()} шт</td>
