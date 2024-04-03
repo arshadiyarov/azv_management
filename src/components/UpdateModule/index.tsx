@@ -29,6 +29,7 @@ const UpdateModule = () => {
   }, [setIsUpdateActive]);
 
   const submitHandle = async (e: FormEvent) => {
+    e.preventDefault();
     const payload = {
       item_update: {
         name: itemUpdatingData.name,
@@ -51,6 +52,7 @@ const UpdateModule = () => {
       );
       setIsSuccess(true);
       console.log("Update successful:", res.data);
+      location.reload();
     } catch (err) {
       setIsSuccess(false);
       console.error("Error updating item:", err);
