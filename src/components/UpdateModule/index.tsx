@@ -29,7 +29,6 @@ const UpdateModule = () => {
   }, [setIsUpdateActive]);
 
   const submitHandle = async (e: FormEvent) => {
-    e.preventDefault();
     const payload = {
       item_update: {
         name: itemUpdatingData.name,
