@@ -29,6 +29,7 @@ const UpdateModule = () => {
   }, [setIsUpdateActive]);
 
   const submitHandle = async (e: FormEvent) => {
+    e.preventDefault();
     const payload = {
       item_update: {
         name: itemUpdatingData.name,
@@ -39,24 +40,21 @@ const UpdateModule = () => {
     };
 
     try {
-      const accessToken = window.localStorage.accessToken;
-      if (!accessToken) {
-        throw new Error("Access token not found");
-      }
-      const url = `${apiUrl}/items/${itemUpdatingData.id}`;
-
-      const headers = {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json", // Установите правильный Content-Type
-      };
-
-      const res = await axios.put(url, payload, { headers });
-
-      console.log("Update successful:", res.data);
+      const res = await axios.put(
+        `${apiUrl}/items/${itemUpdatingData.id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.accessToken}`,
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+        },
+      );
       setIsSuccess(true);
+      console.log("Update successful:", res.data);
     } catch (err) {
-      console.error("Error updating item:", err);
       setIsSuccess(false);
+      console.error("Error updating item:", err);
     }
   };
 
