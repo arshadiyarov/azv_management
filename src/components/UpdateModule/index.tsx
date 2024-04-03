@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 
 import { useButtonContext } from "@/ButtonContext";
 import { RxCross2 } from "react-icons/rx";
@@ -28,7 +28,7 @@ const UpdateModule = () => {
     };
   }, [setIsUpdateActive]);
 
-  const submitHandle = async () => {
+  const submitHandle = async (e: FormEvent) => {
     const payload = {
       item_update: {
         name: itemUpdatingData.name,
@@ -38,24 +38,26 @@ const UpdateModule = () => {
       extra_info: historyItem.extra_info || "",
     };
 
-    setTimeout(async () => {
-      try {
-        const res = await axios.put(
-          `${apiUrl}/items/${itemUpdatingData.id}`,
-          payload,
-          {
-            headers: {
-              Authorization: `Bearer ${window.localStorage.accessToken}`,
-            },
-          },
-        );
-        setIsSuccess(true);
-        console.log("Update successful:", res.data);
-      } catch (err) {
-        setIsSuccess(true);
-        console.error("Error updating item:", err);
+    try {
+      const accessToken = window.localStorage.accessToken;
+      if (!accessToken) {
+        throw new Error("Access token not found");
       }
-    }, 500);
+      const url = `${apiUrl}/items/${itemUpdatingData.id}`;
+
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json", // Установите правильный Content-Type
+      };
+
+      const res = await axios.put(url, payload, { headers });
+
+      console.log("Update successful:", res.data);
+      setIsSuccess(true);
+    } catch (err) {
+      console.error("Error updating item:", err);
+      setIsSuccess(false);
+    }
   };
 
   return (
@@ -73,7 +75,7 @@ const UpdateModule = () => {
         <h3 className={"text-xl text-center font-semibold"}>
           Изменить продукт
         </h3>
-        <form onSubmit={() => submitHandle()}>
+        <form onSubmit={(e) => submitHandle(e)}>
           <div className={"flex flex-col mb-10 gap-2"}>
             <div className={"flex flex-col"}>
               <label htmlFor="">
