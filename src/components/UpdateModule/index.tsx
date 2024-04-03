@@ -38,22 +38,24 @@ const UpdateModule = () => {
       extra_info: historyItem.extra_info || "",
     };
 
-    try {
-      const res = await axios.put(
-        `${apiUrl}/items/${itemUpdatingData.id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${window.localStorage.accessToken}`,
+    setTimeout(async () => {
+      try {
+        const res = await axios.put(
+          `${apiUrl}/items/${itemUpdatingData.id}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${window.localStorage.accessToken}`,
+            },
           },
-        },
-      );
-      setIsSuccess(true);
-      console.log("Update successful:", res.data);
-    } catch (err) {
-      setIsSuccess(true);
-      console.error("Error updating item:", err);
-    }
+        );
+        setIsSuccess(true);
+        console.log("Update successful:", res.data);
+      } catch (err) {
+        setIsSuccess(true);
+        console.error("Error updating item:", err);
+      }
+    }, 500);
   };
 
   return (
