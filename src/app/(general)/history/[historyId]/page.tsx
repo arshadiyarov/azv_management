@@ -8,6 +8,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { checkAuthentication } from "@/AuthUtil";
 import { useRouter } from "next/navigation";
 import InfoBox from "@/components/ui/InfoBox";
+import { lightningcss } from "tailwindcss/src/oxide/cli/build/deps";
 
 interface IHistoryItem {
   username: string;
@@ -50,14 +51,26 @@ const HistoryId = ({ params }: { params: { historyId: number } }) => {
           headers: {
             Authorization: `Bearer ${window.localStorage.accessToken}`,
           },
+          params: {
+            skip: 0,
+            limit: 1000000,
+          },
         });
         const foundItem = res.data.find(
           (item: IHistoryItem) => item.id == params.historyId,
         );
-        setItemAfterChange(foundItem.after_change);
-        setItemBeforeChange(foundItem.before_change);
-        setHistoryItem(foundItem || null);
-        console.log("found item:r", foundItem);
+
+        console.log("res data:", res.data);
+
+        if (foundItem) {
+          setItemAfterChange(foundItem.after_change || []); // Set default value if after_change is undefined
+          setItemBeforeChange(foundItem.before_change || []); // Set default value if before_change is undefined
+          setHistoryItem(foundItem);
+        } else {
+          console.log("History item not found");
+        }
+
+        console.log("found item:", foundItem);
       } catch (err) {
         console.log("Error fetching item:", err);
         throw err;

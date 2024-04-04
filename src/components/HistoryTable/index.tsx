@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { checkAuthentication } from "@/AuthUtil";
 
 import { HiOutlineFilter } from "react-icons/hi";
+import { IoIosSearch } from "react-icons/io";
+import { RxCross2 } from "react-icons/rx";
+import buttonFill from "@/components/ui/buttons/ButtonFill";
 
 interface IHistoryItems {
   username: string;
@@ -14,6 +17,21 @@ interface IHistoryItems {
   after_change: string;
   history_type: string;
   title: string;
+  id: number;
+  timestamp: string;
+}
+
+interface IHistorySuggestion {
+  username: string;
+  buyer: string;
+  extra_info: string;
+  before_change: string;
+  after_change: string;
+  history_type: string;
+  title: string;
+  total_unique_items_count: number;
+  total_items_count: number;
+  total_price: number;
   id: number;
   timestamp: string;
 }
@@ -51,7 +69,9 @@ const HistoryTable = () => {
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
+  const [searchProduct, setSearchProduct] = useState("");
   const modalRef = useRef<HTMLUListElement>(null);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (typeof window.localStorage !== "undefined" && !checkAuthentication()) {
@@ -188,8 +208,57 @@ const HistoryTable = () => {
     setSelectedHistoryType(historyType === "all" ? "" : historyType);
   };
 
+  const clearClickHandle = async () => {
+    setSearchProduct("");
+    setIsLoading(true);
+    try {
+      const res = await axios.get(`${apiUrl}/history/`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.accessToken}`,
+        },
+        params: {
+          skip: 0,
+          limit: itemsPerPage?.limit || 10,
+          history_type: selectedHistoryType,
+        },
+      });
+      setHistoryItems(res.data);
+      setIsLoading(false);
+      setTimeZone({ timeZone: new Date().getTimezoneOffset() / 60 });
+    } catch (err) {
+      console.log("Error fetching items:", err);
+      throw err;
+    }
+  };
+
   return (
     <>
+      {/*<div className={"p-2 flex justify-center lg:justify-end"}>*/}
+      {/*  <form*/}
+      {/*    className={*/}
+      {/*      "pl-1.5 border border-border bg-white flex items-center gap-2 rounded-md relative mr-6"*/}
+      {/*    }*/}
+      {/*  >*/}
+      {/*    <IoIosSearch className={"text-text text-xl"} />*/}
+      {/*    <input*/}
+      {/*      type="text"*/}
+      {/*      placeholder={"Поиск"}*/}
+      {/*      value={searchProduct}*/}
+      {/*      className={"border-none outline-none py-1 rounded-r-md"}*/}
+      {/*      onChange={(e) => {*/}
+      {/*        setSearchProduct(e.target.value);*/}
+      {/*      }}*/}
+      {/*    />*/}
+      {/*    {searchProduct && (*/}
+      {/*      <button className={"mr-2"}>*/}
+      {/*        <RxCross2*/}
+      {/*          onClick={() => clearClickHandle()}*/}
+      {/*          className={"cursor-pointer"}*/}
+      {/*        />*/}
+      {/*      </button>*/}
+      {/*    )}*/}
+      {/*  </form>*/}
+      {/*</div>*/}
       <div
         className={
           "text-[10px] lg:text-lg bg-white border border-border rounded-lg relative"
@@ -198,7 +267,7 @@ const HistoryTable = () => {
         <HiOutlineFilter
           onClick={() => setIsFilterActive(true)}
           className={
-            "absolute right-1 -top-6 text-primary text-xl cursor-pointer"
+            "absolute right-1 -top-5 text-primary text-xl cursor-pointer"
           }
         />
         {isFilterActive && (

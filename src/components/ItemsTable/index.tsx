@@ -260,6 +260,7 @@ const ItemsTable = () => {
               onChange={(e) => {
                 handleChange(e.target.value);
               }}
+              onSubmit={(e) => e.preventDefault()}
             />
             {searchProduct && (
               <RxCross2
