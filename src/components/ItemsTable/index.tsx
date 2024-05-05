@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 
 import { IoIosSearch } from "react-icons/io";
@@ -8,6 +8,28 @@ import { useButtonContext } from "@/ButtonContext";
 import { RxCross2 } from "react-icons/rx";
 import { checkAuthentication } from "@/AuthUtil";
 import { useRouter } from "next/navigation";
+import { getSearchData } from "@/app/(general)/api";
+
+export interface Root {
+  username: string;
+  buyer: any;
+  extra_info: any;
+  before_change: any;
+  after_change: AfterChange[];
+  history_type: string;
+  title: string;
+  total_unique_items_count: number;
+  total_items_count: number;
+  total_price: number;
+  id: number;
+  timestamp: string;
+}
+
+export interface AfterChange {
+  name: string;
+  quantity: number;
+  price: number;
+}
 
 interface IItems {
   name: string;
@@ -46,7 +68,7 @@ const ItemsTable = () => {
   const [itemsPerPage, setItemsPerPage] = useState<IItemsPerPage>({
     limit: 10,
   });
-  const [searchProduct, setSearchProduct] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const { itemUpdatingData, setItemUpdatingData, setHistoryItem } =
     useButtonContext();
   const [itemsSummary, setItemsSummary] = useState<IItemsSummary>({
@@ -64,7 +86,9 @@ const ItemsTable = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!checkAuthentication()) {
@@ -121,7 +145,7 @@ const ItemsTable = () => {
     getUser();
     getSummary();
     getItems();
-  }, [itemsPerPage, searchProduct, apiUrl, router]);
+  }, [itemsPerPage, apiUrl, router]);
 
   const getHistoryItem = async (id: number) => {
     try {
@@ -156,7 +180,7 @@ const ItemsTable = () => {
   };
 
   const clearClickHandle = async () => {
-    setSearchProduct("");
+    setSearchInput("");
     try {
       const res = await axios.get(`${apiUrl}/items/`, {
         headers: {
@@ -203,39 +227,31 @@ const ItemsTable = () => {
     }
   };
 
-  const fetchSuggestions = async () => {
-    try {
-      const res = await axios.get(`${apiUrl}/items/`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.accessToken}`,
-        },
-        params: {
-          skip: 0,
-          limit: 99999999,
-        },
-      });
-      const filteredItems = res.data.filter((item: IItems) =>
-        item.name.toLowerCase().includes(searchProduct.toLowerCase()),
-      );
-      setItems(filteredItems);
-    } catch (err) {
-      console.log("Error fetching items:", err);
-      throw err;
+  const handleHistorySearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+
+    if (searchTimeout !== null) {
+      clearTimeout(searchTimeout);
     }
+
+    setSearchTimeout(
+      setTimeout(() => {
+        fetchHistoryData(e.target.value);
+      }, 500),
+    );
   };
 
-  const handleChange = (value: string) => {
-    setSearchProduct(value);
-    if (value.length === 0) {
-      return;
+  const fetchHistoryData = async (queryString: string) => {
+    try {
+      const res = await getSearchData(
+        queryString,
+        window.localStorage.accessToken,
+      );
+      setItems(res.data);
+      console.log("Search res:", res);
+    } catch (error) {
+      console.error("Error fetching search data:", error);
     }
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    const newTimeoutId = setTimeout(() => {
-      fetchSuggestions();
-    }, 500);
-    setTimeoutId(newTimeoutId);
   };
 
   return (
@@ -255,14 +271,11 @@ const ItemsTable = () => {
             <input
               type="text"
               placeholder={"Поиск"}
-              value={searchProduct}
+              value={searchInput}
               className={"border-none outline-none"}
-              onChange={(e) => {
-                handleChange(e.target.value);
-              }}
-              onSubmit={(e) => e.preventDefault()}
+              onChange={handleHistorySearch}
             />
-            {searchProduct && (
+            {searchInput && (
               <RxCross2
                 onClick={() => clearClickHandle()}
                 className={"cursor-pointer"}
@@ -299,9 +312,9 @@ const ItemsTable = () => {
                 }}
               >
                 <td className={"py-4"}>{item.name}</td>
-                <td>{item.quantity.toLocaleString()} шт</td>
+                <td>{item.quantity?.toLocaleString()} шт</td>
                 <td className={"w-fit pr-2"}>
-                  {item.price.toLocaleString()} тг
+                  {item.price?.toLocaleString()} тг
                 </td>
               </tr>
             ))}
@@ -309,18 +322,16 @@ const ItemsTable = () => {
         </table>
       </div>
       <div
-        className={`w-screen lg:w-full flex ${searchProduct ? "justify-end" : "justify-between"} items-center px-4 py-3`}
+        className={`w-screen lg:w-full flex justify-between items-center px-4 py-3`}
       >
-        {!searchProduct && (
-          <button
-            className={
-              "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
-            }
-            onClick={handleLoadMore}
-          >
-            Загрузить еще
-          </button>
-        )}
+        <button
+          className={
+            "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
+          }
+          onClick={handleLoadMore}
+        >
+          Загрузить еще
+        </button>
         {isLoading && <p>Загрузка...</p>}
         <select
           name="itemsPerPage"

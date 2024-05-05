@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -7,7 +7,7 @@ import { checkAuthentication } from "@/AuthUtil";
 import { HiOutlineFilter } from "react-icons/hi";
 import { IoIosSearch } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
-import buttonFill from "@/components/ui/buttons/ButtonFill";
+import { getSearchData } from "@/app/(general)/history/api";
 
 interface IHistoryItems {
   username: string;
@@ -60,7 +60,6 @@ const HistoryTable = () => {
     total_price: 0,
     total_items_count: 0,
   });
-
   const [timeZone, setTimeZone] = useState<ITimeZone>({
     timeZone: 0,
   });
@@ -70,8 +69,12 @@ const HistoryTable = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
   const [searchProduct, setSearchProduct] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const modalRef = useRef<HTMLUListElement>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
 
   useEffect(() => {
     if (typeof window.localStorage !== "undefined" && !checkAuthentication()) {
@@ -175,13 +178,13 @@ const HistoryTable = () => {
         params: {
           skip:
             typeof itemsPerPage.limit !== "undefined" &&
-            (page - 1) * itemsPerPage.limit, // Calculate the offset based on page number
+            (page - 1) * itemsPerPage.limit,
           limit: itemsPerPage.limit,
           history_type: selectedHistoryType,
         },
       });
       setIsLoading(false);
-      setHistoryItems((prevItems) => [...prevItems, ...res.data]); // Append newly fetched items to existing items
+      setHistoryItems((prevItems) => [...prevItems, ...res.data]);
     } catch (err) {
       console.log("Error fetching history items:", err);
       throw err;
@@ -231,34 +234,35 @@ const HistoryTable = () => {
     }
   };
 
+  const handleHistorySearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+
+    if (searchTimeout !== null) {
+      clearTimeout(searchTimeout);
+    }
+
+    setSearchTimeout(
+      setTimeout(() => {
+        fetchHistoryData(e.target.value);
+      }, 500),
+    );
+  };
+
+  const fetchHistoryData = async (queryString: string) => {
+    try {
+      const res = await getSearchData(
+        queryString,
+        window.localStorage.accessToken,
+      );
+      setHistoryItems(res.data);
+      console.log("history search res:", res);
+    } catch (error) {
+      console.error("Error fetching search data:", error);
+    }
+  };
+
   return (
     <>
-      {/*<div className={"p-2 flex justify-center lg:justify-end"}>*/}
-      {/*  <form*/}
-      {/*    className={*/}
-      {/*      "pl-1.5 border border-border bg-white flex items-center gap-2 rounded-md relative mr-6"*/}
-      {/*    }*/}
-      {/*  >*/}
-      {/*    <IoIosSearch className={"text-text text-xl"} />*/}
-      {/*    <input*/}
-      {/*      type="text"*/}
-      {/*      placeholder={"Поиск"}*/}
-      {/*      value={searchProduct}*/}
-      {/*      className={"border-none outline-none py-1 rounded-r-md"}*/}
-      {/*      onChange={(e) => {*/}
-      {/*        setSearchProduct(e.target.value);*/}
-      {/*      }}*/}
-      {/*    />*/}
-      {/*    {searchProduct && (*/}
-      {/*      <button className={"mr-2"}>*/}
-      {/*        <RxCross2*/}
-      {/*          onClick={() => clearClickHandle()}*/}
-      {/*          className={"cursor-pointer"}*/}
-      {/*        />*/}
-      {/*      </button>*/}
-      {/*    )}*/}
-      {/*  </form>*/}
-      {/*</div>*/}
       <div
         className={
           "text-[10px] lg:text-lg bg-white border border-border rounded-lg relative"
@@ -267,7 +271,7 @@ const HistoryTable = () => {
         <HiOutlineFilter
           onClick={() => setIsFilterActive(true)}
           className={
-            "absolute right-1 -top-5 text-primary text-xl cursor-pointer"
+            "absolute right-2 -top-6 text-primary text-xl cursor-pointer"
           }
         />
         {isFilterActive && (
@@ -312,8 +316,34 @@ const HistoryTable = () => {
             </li>
           </ul>
         )}
-        <div className={"p-3 text-center text-lg lg:text-2xl font-semibold"}>
-          История
+        <div className={"p-3 flex items-center justify-between"}>
+          <p className={"pl-3 text-center text-lg lg:text-2xl font-semibold"}>
+            История
+          </p>
+          <div className={"flex justify-center lg:justify-end"}>
+            <div
+              className={
+                "pl-1.5 border border-border bg-white flex items-center gap-2 rounded-md relative"
+              }
+            >
+              <IoIosSearch className={"text-text text-xl"} />
+              <input
+                type="text"
+                placeholder={"Поиск"}
+                value={searchInput}
+                className={"border-none outline-none py-1 rounded-r-md"}
+                onChange={handleHistorySearch}
+              />
+              {searchProduct && (
+                <button type={"button"} className={"mr-2"}>
+                  <RxCross2
+                    onClick={() => clearClickHandle()}
+                    className={"cursor-pointer"}
+                  />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
         <table className={"w-full"}>
           <thead>
