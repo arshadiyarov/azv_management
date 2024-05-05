@@ -278,7 +278,7 @@ const HistoryTable = () => {
           <ul
             ref={modalRef}
             className={
-              "bg-white absolute right-0 top-0 rounded-lg text-center border border-border shadow-md"
+              "z-10 bg-white absolute right-0 top-0 rounded-lg text-center border border-border shadow-md"
             }
           >
             <p className={"border-b border-border py-1 px-4 font-bold"}>
@@ -378,15 +378,19 @@ const HistoryTable = () => {
           </tbody>
         </table>
       </div>
-      <div className={"flex justify-between items-center px-4 py-3"}>
-        <button
-          className={
-            "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
-          }
-          onClick={handleLoadMore}
-        >
-          Загрузить еще
-        </button>
+      <div
+        className={`flex ${searchInput ? "justify-end" : "justify-between"} items-center px-4 py-3`}
+      >
+        {!searchInput && (
+          <button
+            className={
+              "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
+            }
+            onClick={handleLoadMore}
+          >
+            Загрузить еще
+          </button>
+        )}
         {isLoading && <p>Загрузка...</p>}
         <select
           name="itemsPerPage"

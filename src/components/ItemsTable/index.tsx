@@ -262,7 +262,7 @@ const ItemsTable = () => {
         }
       >
         <div className={"p-2 flex justify-center lg:justify-end"}>
-          <form
+          <div
             className={
               "pl-1.5 border border-border flex items-center gap-2 rounded-md relative"
             }
@@ -281,7 +281,7 @@ const ItemsTable = () => {
                 className={"cursor-pointer"}
               />
             )}
-          </form>
+          </div>
         </div>
         <table className={"w-screen lg:w-full"}>
           <thead>
@@ -322,16 +322,18 @@ const ItemsTable = () => {
         </table>
       </div>
       <div
-        className={`w-screen lg:w-full flex justify-between items-center px-4 py-3`}
+        className={`w-screen lg:w-full flex ${searchInput ? "justify-end" : "justify-between"} items-center px-4 py-3`}
       >
-        <button
-          className={
-            "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
-          }
-          onClick={handleLoadMore}
-        >
-          Загрузить еще
-        </button>
+        {!searchInput && (
+          <button
+            className={
+              "self-center my-3 bg-primary py-2 px-6 text-white rounded-md text-sm flex items-center justify-center w-fit h-fit hover:bg-btnHover active:bg-btnActive"
+            }
+            onClick={handleLoadMore}
+          >
+            Загрузить еще
+          </button>
+        )}
         {isLoading && <p>Загрузка...</p>}
         <select
           name="itemsPerPage"
