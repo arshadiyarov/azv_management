@@ -8,7 +8,6 @@ import { IoIosArrowBack } from "react-icons/io";
 import { checkAuthentication } from "@/AuthUtil";
 import { useRouter } from "next/navigation";
 import InfoBox from "@/components/ui/InfoBox";
-import { lightningcss } from "tailwindcss/src/oxide/cli/build/deps";
 
 interface IHistoryItem {
   username: string;
