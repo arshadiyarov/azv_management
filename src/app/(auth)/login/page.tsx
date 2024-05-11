@@ -104,7 +104,7 @@ const Login = () => {
           {isError && (
             <p
               className={
-                "flex items-center w-full gap-0.5 absolute text-center text-sm text-red-600 bottom-16 left-[32px] sm:left-[48px] lg:left-[64px] xl:left-[78px]"
+                "flex items-center w-full gap-0.5 absolute text-center text-sm text-red-600 bottom-[106px] left-[32px] sm:left-[48px] lg:left-[64px] xl:left-[78px]"
               }
             >
               <HiOutlineExclamationCircle className={"text-lg"} />
