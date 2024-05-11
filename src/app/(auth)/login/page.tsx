@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import { checkAuthentication } from "@/AuthUtil";
-import Link from "next/link";
 
 interface IAuthData {
   username: string;
@@ -104,7 +103,7 @@ const Login = () => {
           {isError && (
             <p
               className={
-                "flex items-center w-full gap-0.5 absolute text-center text-sm text-red-600 bottom-[106px] left-[32px] sm:left-[48px] lg:left-[64px] xl:left-[78px]"
+                "flex items-center w-full gap-0.5 absolute text-center text-sm text-red-600 bottom-16 left-[32px] sm:left-[48px] lg:left-[64px] xl:left-[78px]"
               }
             >
               <HiOutlineExclamationCircle className={"text-lg"} />
@@ -118,12 +117,12 @@ const Login = () => {
             Войти
           </button>
         </form>
-        <p className={"text-sm text-center mt-4"}>
-          Нет аккаунта?
-          <Link href={"/sign-up"} className={"underline ml-1"}>
-            Создать новый
-          </Link>
-        </p>
+        {/*<p className={"text-sm text-center mt-4"}>*/}
+        {/*  Нет аккаунта?*/}
+        {/*  <Link href={"/sign-up"} className={"underline ml-1"}>*/}
+        {/*    Создать новый*/}
+        {/*  </Link>*/}
+        {/*</p>*/}
       </div>
     </div>
   );
